@@ -3,7 +3,7 @@
 Align the Hanford and Livingston gravitational-wave traces and listen to the final moment of GW150914. [Open Chirp Room](https://coolcode.ca/chirproom/).
 
 <!-- coolcode:guide -->
-Use Apply published alignment to move Livingston seven milliseconds later and reverse its polarity. Compare the waveform correlation around merger, then play the one-second stereo extract. Audio starts only when you press Play.
+Compare the unadjusted, published and custom alignments over two equal 170 ms windows. Apply the seven-millisecond shift and polarity reversal to see what changes near the merger and earlier in the recording. Press Play to hear the one-second stereo extract.
 <!-- /coolcode:guide -->
 
 ## Data and interpretation

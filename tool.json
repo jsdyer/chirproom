@@ -1,7 +1,7 @@
 {
   "id": "chirproom",
   "title": "Chirp Room",
-  "description": "Align the Hanford and Livingston gravitational-wave traces and listen to the final moment of GW150914.",
+  "description": "Can two distant detectors pick out the same black-hole merger? Align the traces and compare their agreement with an earlier recording window.",
   "category": "field-kit",
   "tags": [
     "LIGO",

@@ -12,3 +12,18 @@ export function correlation(x,y) {
   for(let i=0;i<x.length;i++){const dx=x[i]-mx,dy=y[i]-my;xy+=dx*dy;xx+=dx*dx;yy+=dy*dy;}
   return xx*yy?xy/Math.sqrt(xx*yy):null;
 }
+
+export function windowScore(hanford, livingston, rate, shiftMs, sign, start, end) {
+  const first = [], second = [];
+  const delay = shiftMs * rate / 1000;
+  for (let i = 0; i < hanford.trace.length; i++) {
+    const time = hanford.startOffset + i / rate;
+    if (time < start || time > end) continue;
+    const value = shifted(livingston.trace, i, delay, sign);
+    if (value !== null) {
+      first.push(hanford.trace[i]);
+      second.push(value);
+    }
+  }
+  return correlation(first, second);
+}

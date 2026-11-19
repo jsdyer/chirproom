@@ -30,7 +30,9 @@ def main():
                 page.on("pageerror", lambda error: errors.append(str(error)))
                 page.goto(f"http://127.0.0.1:{server.server_port}/example-tool/")
                 page.locator('#loading').wait_for(state='hidden')
+                assert page.locator('#scorecard tbody tr').count() == 3
                 page.locator('#align').click()
+                assert page.locator('#scorecard tbody tr').nth(1).locator('td').nth(1).inner_text() == page.locator('#scorecard tbody tr').nth(2).locator('td').nth(1).inner_text()
                 assert page.locator('#shiftLabel').inner_text() == '7 ms'
                 assert page.locator('#invert').is_checked()
                 page.locator('#zoom').select_option('1')

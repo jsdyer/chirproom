@@ -1,11 +1,16 @@
-import {el,fmt,options,source,start} from './ui.mjs';
-import {shifted,correlation} from './model.mjs';
+import {el,fmt,options,source,table,start} from './ui.mjs';
+import {shifted,windowScore} from './model.mjs';
 start(data=>{
   const [han,liv]=data.traces;
   source('hraw',han.source);source('lraw',liv.source);
   options('zoom',[[.28,'Final 280 milliseconds'],[1,'Full one-second extract']],.28);
   const plot=el('plot'), rate=data.rate, delta=()=>Number(el('shift').value)*rate/1000;
   const sign=()=>el('invert').checked?-1:1;
+  const scores = (shift, polarity) => [
+    windowScore(han, liv, rate, shift, polarity, -.15, .02),
+    windowScore(han, liv, rate, shift, polarity, -.48, -.31)
+  ];
+  const unadjusted = scores(0, 1), published = scores(7, -1);
   let context,active;
   function draw(){
     const windowSeconds=Number(el('zoom').value),full=windowSeconds===1;
@@ -26,11 +31,12 @@ start(data=>{
     }
     const t0=han.startOffset+from/rate,t1=t0+(n-1)/rate;
     ctx.fillText(fmt(t0*1000,0)+' ms',48,226);ctx.textAlign='right';ctx.fillText(fmt(t1*1000,0)+' ms',w-14,226);
-    let a=[],b=[];
-    for(let j=0;j<han.trace.length;j++){const t=han.startOffset+j/rate;
-      if(t<-.15 || t>.02)continue;const v=shifted(liv.trace,j,delta(),sign());if(v!=null){a.push(han.trace[j]);b.push(v);}}
+    const current = scores(Number(el('shift').value), sign());
+    table('scorecard', ['Alignment', 'Around merger (−150 to +20 ms)', 'Earlier (−480 to −310 ms)'],
+      [['Unadjusted', ...unadjusted], ['Published (+7 ms, reversed)', ...published], ['Your settings', ...current]]
+        .map(([label, merger, earlier]) => [label, fmt(merger, 3), fmt(earlier, 3)]));
     el('shiftLabel').textContent=el('shift').value+' ms';
-    el('result').textContent='Waveform correlation '+fmt(correlation(a,b),3);
+    el('result').textContent='Waveform correlation '+fmt(current[0],3);
     el('caption').textContent='Time relative to GPS '+data.referenceGPS+' in milliseconds. Correlation uses −150 to +20 ms at both zoom settings.';
   }
   function stop(){if(active){active.stop();active=null;}el('stop').disabled=true;el('audioStatus').textContent='';}
